@@ -11,4 +11,6 @@ public interface AskView {
     List<Filter> getFilters();
 
     void error(String err);
+
+    void log(String msg);
 }

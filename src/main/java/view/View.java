@@ -23,6 +23,7 @@ public class View implements AskView, NotifyView {
     private AskModel model;
     TaskData taskData;
     JTable tasksTable;
+    JTextField jtfLogs;
     List<Task> tasks;
     List<FilterPanel> filterPanels;
 
@@ -82,7 +83,7 @@ public class View implements AskView, NotifyView {
         JPanel jpTasks = new JPanel();
         jpTasks.setBorder(BorderFactory.createTitledBorder("Tareas"));
         JScrollPane scrollPane = new JScrollPane(tasksTable);
-        scrollPane.setPreferredSize(new Dimension(500, 200));
+        scrollPane.setPreferredSize(new Dimension(500, 180));
         jpTasks.add(scrollPane);
 
         container.add(jpTasks);
@@ -111,6 +112,15 @@ public class View implements AskView, NotifyView {
         jpAction.add(removeTask);
 
         container.add(jpAction);
+
+        // Logs
+        JPanel jpLogs = new JPanel();
+        jtfLogs = new JTextField(40);
+        jpLogs.setBorder(BorderFactory.createTitledBorder("Última Acción"));
+        jtfLogs.setEditable(false);
+        jpLogs.add(jtfLogs);
+
+        container.add(jpLogs);
 
         window.addWindowListener(new WindowAdapter() {
             @Override
@@ -144,6 +154,11 @@ public class View implements AskView, NotifyView {
         return filterPanels.stream()
             .map(FilterPanel::getFilter)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public void log(String msg) {
+        jtfLogs.setText(msg);
     }
 
     @Override

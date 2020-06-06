@@ -5,15 +5,20 @@ import model.task.Task;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+/**
+ * Se encarga de actualizar los detalles de la tarea cada vez que sea necesario
+ */
 public class TaskData {
-
     private JTextField title;
     private JTextArea description;
     private JCheckBox completed;
-    private Map<JRadioButton, Priority> priority;
+    private List<JRadioButton> buttons;
+    private Map<String, Priority> priority; // Texto Botón -> Prioridad
 
     public TaskData() {
         title = new JTextField(40);
@@ -27,22 +32,34 @@ public class TaskData {
 
         completed = new JCheckBox("Completada");
 
+        buttons = new ArrayList<>();
         priority = new HashMap<>();
         JRadioButton lowPriorityBtn = new JRadioButton("Baja");
-        priority.put(lowPriorityBtn, Priority.BAJA);
+        priority.put(lowPriorityBtn.getText(), Priority.BAJA);
+        buttons.add(lowPriorityBtn);
         JRadioButton normalPriorityBtn = new JRadioButton("Normal");
-        priority.put(normalPriorityBtn, Priority.NORMAL);
+        priority.put(normalPriorityBtn.getText(), Priority.NORMAL);
+        buttons.add(normalPriorityBtn);
         JRadioButton highPriorityBtn = new JRadioButton("Alta");
-        priority.put(highPriorityBtn, Priority.ALTA);
+        priority.put(highPriorityBtn.getText(), Priority.ALTA);
+        buttons.add(highPriorityBtn);
     }
 
+    /**
+     * Actualiza los campos de texto y botones con los datos de la tarea que corresponde
+     *
+     * @param task Tarea
+     */
     public void updateViewData(Task task) {
         title.setText(task.getTitle());
         description.setText(task.getDescription());
         completed.setSelected(task.isFinished());
-        priority.keySet().forEach(btn -> btn.setSelected(priority.get(btn) == task.getPriority()));
+        buttons.forEach(btn -> btn.setSelected(priority.get(btn.getText()) == task.getPriority()));
     }
 
+    /**
+     * @return Panel con detalles de la tarea
+     */
     public JPanel getPanel() {
         // Panel de detalles de la tarea
         JPanel jpDetails = new JPanel();
@@ -70,7 +87,7 @@ public class TaskData {
         jpPriority.setBorder(BorderFactory.createTitledBorder("Prioridad"));
         ButtonGroup priorityBtns = new ButtonGroup();
 
-        for (JRadioButton btn : priority.keySet()) {
+        for (JRadioButton btn : buttons) {
             priorityBtns.add(btn);
             jpPriority.add(btn);
 
@@ -80,22 +97,31 @@ public class TaskData {
         return jpDetails;
     }
 
+    /**
+     * @return Título de la tarea actual
+     */
     public String getTitle() {
         return title.getText();
     }
 
+    /**
+     * @return Descripción de la tarea actual
+     */
     public String getDescription() {
         return description.getText();
     }
 
+    /**
+     * @return Si la tarea actual está acabada o no
+     */
     public boolean getCompleted() {
         return completed.isSelected();
     }
 
     public Priority getPriority() {
-        for (JRadioButton btn : priority.keySet()) {
+        for (JRadioButton btn : buttons) {
             if (btn.isSelected()) {
-                return priority.get(btn);
+                return priority.get(btn.getText());
             }
         }
         return Priority.BAJA;

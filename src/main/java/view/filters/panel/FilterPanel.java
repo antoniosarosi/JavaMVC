@@ -21,7 +21,7 @@ public class FilterPanel {
     private List<JRadioButton> buttons;
 
     public FilterPanel() {
-        title = "Titulo";
+        title = "";
         filterMap = new HashMap<>();
         buttons = new ArrayList<>();
     }

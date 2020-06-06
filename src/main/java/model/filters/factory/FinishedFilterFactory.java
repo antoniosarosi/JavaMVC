@@ -4,6 +4,9 @@ import model.filters.Filter;
 import model.filters.FinishedFilter;
 import model.filters.NoFilter;
 
+/**
+ * Fábrica para filtrar por tareas completadas
+ */
 public class FinishedFilterFactory {
     public Filter finishedTasksFilter() {
         return new FinishedFilter(true);

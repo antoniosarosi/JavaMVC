@@ -5,6 +5,9 @@ import model.filters.NoFilter;
 import model.filters.PriorityFilter;
 import model.task.Priority;
 
+/**
+ * Fábrica para filtrar por prioridad
+ */
 public class PriorityFilterFactory {
     public Filter lowPriorityFilter() {
         return new PriorityFilter(Priority.BAJA);

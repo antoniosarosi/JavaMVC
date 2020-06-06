@@ -6,6 +6,9 @@ import javax.swing.table.AbstractTableModel;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Tabla de tareas
+ */
 public class TasksTableModel extends AbstractTableModel {
     private List<String> columns;
     private List<Task> tasks;
@@ -33,8 +36,8 @@ public class TasksTableModel extends AbstractTableModel {
         }
         switch (columnIndex) {
             case 0: return task.getTitle();
-            case 1: return task.getPriority().toString().toLowerCase();
-            case 2: return task.isFinished() ? "Sí" : "No";
+            case 1: return task.getPriority().toString();
+            case 2: return task.isFinished() ? "SI" : "NO";
             default: return task;
         }
     }

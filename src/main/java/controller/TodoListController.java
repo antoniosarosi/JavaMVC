@@ -1,6 +1,7 @@
 package controller;
 
 import model.ModelChanges;
+import model.task.Task;
 import view.AskView;
 
 public class TodoListController implements Controller {
@@ -22,8 +23,13 @@ public class TodoListController implements Controller {
 
     @Override
     public void addTask() {
-        if (!model.addTask(view.getTask())) {
+        Task task = view.getTask();
+        if (task.getTitle().isEmpty()) {
+            view.error("El título de la tarea no puede estar vacío");
+        } else if (!model.addTask(task)) {
             view.error("Ya existe una tarea con ese título");
+        } else {
+            view.log("Tarea añadida");
         }
     }
 
@@ -31,6 +37,8 @@ public class TodoListController implements Controller {
     public void removeTask() {
         if (!model.removeTask(view.getTask())) {
             view.error("No existe ninguna tarea con ese título");
+        } else {
+            view.log("Tarea borrada");
         }
     }
 
@@ -38,6 +46,8 @@ public class TodoListController implements Controller {
     public void updateTask() {
         if (!model.updateTask(view.getTask())) {
             view.error("No existe ninguna tarea con ese título");
+        } else {
+            view.log("Tarea actualizada");
         }
     }
 

@@ -1,6 +1,5 @@
 package model;
 
-
 import model.filters.Filter;
 import model.task.Task;
 import view.NotifyView;
@@ -14,10 +13,12 @@ public class Model implements AskModel, ModelChanges {
     private NotifyView view;
     private List<Task> tasks;
     private Collection<Filter> filters;
+    private String data;
 
     public Model() {
         tasks = new ArrayList<>();
         filters = new ArrayList<>();
+        data = "datos.bin";
     }
 
     public Model setView(NotifyView view) {
@@ -50,10 +51,11 @@ public class Model implements AskModel, ModelChanges {
 
     @Override
     public boolean removeTask(Task task) {
-        if (!tasks.contains(task)) {
+        int index = tasks.indexOf(task);
+        if (index < 0) {
             return false;
         }
-        tasks.remove(task);
+        tasks.remove(index);
         view.taskListChanged();
 
         return true;
@@ -61,10 +63,11 @@ public class Model implements AskModel, ModelChanges {
 
     @Override
     public boolean updateTask(Task task) {
-        if (!tasks.contains(task)) {
+        int index = tasks.indexOf(task);
+        if (index < 0) {
             return false;
         }
-        tasks.set(tasks.indexOf(task), task);
+        tasks.set(index, task);
         view.taskListChanged();
 
         return true;
@@ -83,7 +86,7 @@ public class Model implements AskModel, ModelChanges {
      */
     public Model load() {
         try {
-            FileInputStream fis = new FileInputStream("datos.bin");
+            FileInputStream fis = new FileInputStream(data);
             ObjectInputStream ois = new ObjectInputStream(fis);
             tasks = (ArrayList) ois.readObject();
             ois.close();
@@ -108,13 +111,13 @@ public class Model implements AskModel, ModelChanges {
     @Override
     public void store() {
         try {
-            FileOutputStream fos = new FileOutputStream("datos.bin");
+            FileOutputStream fos = new FileOutputStream(data);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(tasks);
             oos.close();
             System.out.println("Datos guardados con éxito");
         }
-        catch (IOException e)  {
+        catch (IOException e) {
             System.err.println("No se han podido almacenar los datos");
         }
     }
