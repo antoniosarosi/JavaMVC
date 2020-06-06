@@ -3,14 +3,14 @@ package view.filters;
 import model.filters.Filter;
 import model.filters.factory.FinishedFilterFactory;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
-public class PriorityTasksFilter implements FilterMap {
+public class CompletedTaskFilter implements FilterMap {
     private Map<String, Filter> filters;
 
-    public PriorityTasksFilter() {
-        filters = new HashMap<>();
+    public CompletedTaskFilter() {
+        filters = new TreeMap<>();
         FinishedFilterFactory factory = new FinishedFilterFactory();
         filters.put("Completadas", factory.finishedTasksFilter());
         filters.put("No Completadas", factory.notFinishedTasksFilter());

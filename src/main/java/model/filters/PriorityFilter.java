@@ -14,6 +14,6 @@ public class PriorityFilter extends Filter {
 
     @Override
     public void filter(List<Task> tasks) {
-        super.filter(tasks, task -> task.getPriority() == priority);
+        super.filter(tasks, task -> task.getPriority() != priority);
     }
 }

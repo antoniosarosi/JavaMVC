@@ -9,4 +9,6 @@ public interface AskView {
     Task getTask();
 
     List<Filter> getFilters();
+
+    void error(String err);
 }

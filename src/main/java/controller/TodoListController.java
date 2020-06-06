@@ -22,21 +22,32 @@ public class TodoListController implements Controller {
 
     @Override
     public void addTask() {
-        model.addTask(view.getTask());
+        if (!model.addTask(view.getTask())) {
+            view.error("Ya existe una tarea con ese título");
+        }
     }
 
     @Override
     public void removeTask() {
-        model.removeTask(view.getTask());
+        if (!model.removeTask(view.getTask())) {
+            view.error("No existe ninguna tarea con ese título");
+        }
     }
 
     @Override
     public void updateTask() {
-        model.updateTask(view.getTask());
+        if (!model.updateTask(view.getTask())) {
+            view.error("No existe ninguna tarea con ese título");
+        }
     }
 
     @Override
     public void changeFilters() {
         model.changeFilters(view.getFilters());
+    }
+
+    @Override
+    public void store() {
+        model.store();
     }
 }

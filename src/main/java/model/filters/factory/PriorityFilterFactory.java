@@ -7,7 +7,7 @@ import model.task.Priority;
 
 public class PriorityFilterFactory {
     public Filter lowPriorityFilter() {
-        return new PriorityFilter(Priority.LOW);
+        return new PriorityFilter(Priority.BAJA);
     }
 
     public Filter normalPriorityFilter() {
@@ -15,7 +15,7 @@ public class PriorityFilterFactory {
     }
 
     public Filter highPriorityFilter() {
-        return new PriorityFilter(Priority.HIGH);
+        return new PriorityFilter(Priority.ALTA);
     }
 
     public Filter noFilter() {

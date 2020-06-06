@@ -27,11 +27,14 @@ public class TasksTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Task task = tasks.get(rowIndex);
+        Task task = tasks.get(0);
+        if (rowIndex >= 0) {
+            task = tasks.get(rowIndex);
+        }
         switch (columnIndex) {
             case 0: return task.getTitle();
-            case 1: return task.getPriority();
-            case 2: return task.isFinished();
+            case 1: return task.getPriority().toString().toLowerCase();
+            case 2: return task.isFinished() ? "Sí" : "No";
             default: return task;
         }
     }

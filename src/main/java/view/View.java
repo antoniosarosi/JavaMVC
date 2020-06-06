@@ -4,14 +4,16 @@ import controller.Controller;
 import model.AskModel;
 import model.filters.Filter;
 import model.task.Task;
-import view.filters.CompletedTasksFilter;
-import view.filters.PriorityTasksFilter;
+import view.filters.CompletedTaskFilter;
+import view.filters.PriorityTaskFilter;
 import view.filters.panel.FilterPanel;
 import view.table.TasksTableModel;
 import view.task.TaskData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,12 +22,14 @@ public class View implements AskView, NotifyView {
     private Controller controller;
     private AskModel model;
     TaskData taskData;
+    JTable tasksTable;
     List<Task> tasks;
     List<FilterPanel> filterPanels;
 
     public View() {
         filterPanels = new ArrayList<>();
         tasks = new ArrayList<>();
+        tasksTable = new JTable(new TasksTableModel(tasks));
     }
 
     /**
@@ -41,6 +45,7 @@ public class View implements AskView, NotifyView {
      */
     public View setModel(AskModel model) {
         this.model = model;
+        taskListChanged();
         return this;
     }
 
@@ -55,18 +60,19 @@ public class View implements AskView, NotifyView {
         // Paneles de filtros
         JPanel jpFilters = new JPanel();
         filterPanels.add(new FilterPanel(
-            "Prioridad",
-            new PriorityTasksFilter().getFilters()
+            "Completadas",
+            new CompletedTaskFilter().getFilters()
         ));
         filterPanels.add(new FilterPanel(
-            "Completadas",
-            new CompletedTasksFilter().getFilters()
+            "Prioridad",
+            new PriorityTaskFilter().getFilters()
         ));
         jpFilters.setLayout(new GridLayout(1, filterPanels.size() + 1));
         filterPanels.forEach(filterPanel -> jpFilters.add(filterPanel.getPanel()));
 
         JPanel jpApplyFilters = new JPanel();
         JButton applyFiltersBtn = new JButton("Aplica Filtros");
+        applyFiltersBtn.addActionListener(e -> controller.changeFilters());
         jpApplyFilters.add(applyFiltersBtn);
         jpFilters.add(jpApplyFilters);
 
@@ -75,14 +81,21 @@ public class View implements AskView, NotifyView {
         // Panel de tareas
         JPanel jpTasks = new JPanel();
         jpTasks.setBorder(BorderFactory.createTitledBorder("Tareas"));
-        JScrollPane tasksTable = new JScrollPane(new JTable(new TasksTableModel(tasks)));
-        tasksTable.setPreferredSize(new Dimension(500, 200));
-        jpTasks.add(tasksTable);
+        JScrollPane scrollPane = new JScrollPane(tasksTable);
+        scrollPane.setPreferredSize(new Dimension(500, 200));
+        jpTasks.add(scrollPane);
 
         container.add(jpTasks);
 
         // Detalles de la tarea
         taskData = new TaskData();
+        tasksTable.getSelectionModel().addListSelectionListener(e -> tasks.forEach(task -> {
+            if (task.getTitle().equals(
+                tasksTable.getValueAt(tasksTable.getSelectedRow(), 0).toString())
+            ) {
+                taskData.updateViewData(task);
+            }
+        }));
         container.add(taskData.getPanel());
 
         // Acción
@@ -99,11 +112,20 @@ public class View implements AskView, NotifyView {
 
         container.add(jpAction);
 
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                controller.store();
+                System.exit(0);
+            }
+        });
         window.pack();
         window.setVisible(true);
     }
 
+    /**
+     * Arranca la iterfaz gráfica
+     */
     public void view() {
         SwingUtilities.invokeLater(this::gui);
     }
@@ -125,7 +147,13 @@ public class View implements AskView, NotifyView {
     }
 
     @Override
+    public void error(String err) {
+        JOptionPane.showMessageDialog(new Frame(), err);
+    }
+
+    @Override
     public void taskListChanged() {
         tasks = model.getTasks();
+        tasksTable.setModel(new TasksTableModel(tasks));
     }
 }

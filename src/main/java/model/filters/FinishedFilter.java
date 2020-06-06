@@ -13,6 +13,6 @@ public class FinishedFilter extends Filter {
 
     @Override
     public void filter(List<Task> tasks) {
-        super.filter(tasks, task -> task.isFinished() == finished);
+        super.filter(tasks, task -> task.isFinished() != finished);
     }
 }

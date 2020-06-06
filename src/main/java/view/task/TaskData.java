@@ -1,6 +1,7 @@
 package view.task;
 
 import model.task.Priority;
+import model.task.Task;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,11 +29,18 @@ public class TaskData {
 
         priority = new HashMap<>();
         JRadioButton lowPriorityBtn = new JRadioButton("Baja");
-        priority.put(lowPriorityBtn, Priority.LOW);
+        priority.put(lowPriorityBtn, Priority.BAJA);
         JRadioButton normalPriorityBtn = new JRadioButton("Normal");
         priority.put(normalPriorityBtn, Priority.NORMAL);
         JRadioButton highPriorityBtn = new JRadioButton("Alta");
-        priority.put(highPriorityBtn, Priority.HIGH);
+        priority.put(highPriorityBtn, Priority.ALTA);
+    }
+
+    public void updateViewData(Task task) {
+        title.setText(task.getTitle());
+        description.setText(task.getDescription());
+        completed.setSelected(task.isFinished());
+        priority.keySet().forEach(btn -> btn.setSelected(priority.get(btn) == task.getPriority()));
     }
 
     public JPanel getPanel() {
@@ -90,6 +98,6 @@ public class TaskData {
                 return priority.get(btn);
             }
         }
-        return Priority.LOW;
+        return Priority.BAJA;
     }
 }

@@ -8,4 +8,6 @@ public interface Controller {
     void updateTask();
 
     void changeFilters();
+
+    void store();
 }

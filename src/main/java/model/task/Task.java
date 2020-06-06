@@ -15,7 +15,7 @@ public class Task implements Serializable {
     public Task() {
         title = "Titulo";
         description = "Descripcion";
-        priority = Priority.LOW;
+        priority = Priority.BAJA;
         finished = false;
     }
 

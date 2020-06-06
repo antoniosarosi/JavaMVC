@@ -6,11 +6,13 @@ import model.task.Task;
 import java.util.Collection;
 
 public interface ModelChanges {
-    void addTask(Task task);
+    boolean addTask(Task task);
 
-    void removeTask(Task task);
+    boolean removeTask(Task task);
 
-    void updateTask(Task task);
+    boolean updateTask(Task task);
 
     void changeFilters(Collection<Filter> filters);
+
+    void store();
 }
