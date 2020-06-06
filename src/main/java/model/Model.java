@@ -6,12 +6,13 @@ import model.task.Task;
 import view.NotifyView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Model implements AskModel, ModelChanges {
     private NotifyView view;
     private List<Task> tasks;
-    private List<Filter> filters;
+    private Collection<Filter> filters;
 
     public Model() {
         tasks = new ArrayList<>();
@@ -22,8 +23,7 @@ public class Model implements AskModel, ModelChanges {
         return this;
     }
 
-    @Override
-    public void setFilters(List<Filter> filters) {
+    public void setFilters(Collection<Filter> filters) {
         this.filters = filters;
     }
 
@@ -38,16 +38,24 @@ public class Model implements AskModel, ModelChanges {
     @Override
     public void addTask(Task task) {
         tasks.add(task);
+        view.taskListChanged();
     }
 
     @Override
     public void removeTask(Task task) {
         tasks.remove(task);
+        view.taskListChanged();
     }
 
     @Override
     public void updateTask(Task task) {
         tasks.set(tasks.indexOf(task), task);
+        view.taskListChanged();
+    }
+
+    @Override
+    public void changeFilters(Collection<Filter> filters) {
+        setFilters(filters);
     }
 
     /**

@@ -3,7 +3,7 @@ package model;
 import model.filters.Filter;
 import model.task.Task;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface ModelChanges {
     void addTask(Task task);
@@ -12,5 +12,5 @@ public interface ModelChanges {
 
     void updateTask(Task task);
 
-    void setFilters(List<Filter> filters);
+    void changeFilters(Collection<Filter> filters);
 }

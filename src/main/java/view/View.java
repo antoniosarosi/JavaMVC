@@ -4,85 +4,100 @@ import controller.Controller;
 import model.AskModel;
 import model.filters.Filter;
 import model.task.Task;
+import view.filters.CompletedTasksFilter;
+import view.filters.PriorityTasksFilter;
+import view.filters.panel.FilterPanel;
 import view.table.TasksTableModel;
+import view.task.TaskData;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class View implements AskView, NotifyView {
     private Controller controller;
     private AskModel model;
+    TaskData taskData;
+    List<Task> tasks;
+    List<FilterPanel> filterPanels;
 
+    public View() {
+        filterPanels = new ArrayList<>();
+        tasks = new ArrayList<>();
+    }
+
+    /**
+     * @param controller Controlador
+     */
     public View setController(Controller controller) {
         this.controller = controller;
         return this;
     }
 
+    /**
+     * @param model Modelo
+     */
     public View setModel(AskModel model) {
         this.model = model;
         return this;
     }
 
+    /**
+     * Crea la interfaz gráfica
+     */
     private void gui() {
-        JFrame window = new JFrame("Examen EI1017");
+        JFrame window = new JFrame("Tareas EI1017");
         Container container = window.getContentPane();
+        container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
 
-        // Panel filtros
+        // Paneles de filtros
         JPanel jpFilters = new JPanel();
-        jpFilters.setLayout(new GridLayout(1, 3));
-        JPanel jpPriority = new JPanel();
-        jpPriority.setLayout(new BoxLayout(jpPriority, BoxLayout.PAGE_AXIS));
-        jpPriority.setBorder(BorderFactory.createTitledBorder("Prioridad"));
-        JRadioButton high = new JRadioButton("Alta");
-        JRadioButton normal = new JRadioButton("Normal");
-        JRadioButton low = new JRadioButton("Baja");
-        JRadioButton all1 = new JRadioButton("Todas");
-        ButtonGroup priorityGroup = new ButtonGroup();
-        priorityGroup.add(high);
-        priorityGroup.add(normal);
-        priorityGroup.add(low);
-        priorityGroup.add(all1);
-        jpPriority.add(high);
-        jpPriority.add(normal);
-        jpPriority.add(low);
-        jpPriority.add(all1);
-        jpFilters.add(jpPriority, BorderLayout.WEST);
-
-        JPanel jpFinished = new JPanel();
-        jpFinished.setLayout(new BoxLayout(jpFinished, BoxLayout.PAGE_AXIS));
-        jpFinished.setBorder(BorderFactory.createTitledBorder("Completadas"));
-        JRadioButton finished = new JRadioButton("Completada");
-        JRadioButton notFinished = new JRadioButton("No Completada");
-        JRadioButton all2 = new JRadioButton("Todas");
-        ButtonGroup finishedGroup = new ButtonGroup();
-        finishedGroup.add(finished);
-        finishedGroup.add(notFinished);
-        finishedGroup.add(all2);
-        jpFinished.add(finished);
-        jpFinished.add(notFinished);
-        jpFinished.add(all2);
-        jpFilters.add(jpFinished, BorderLayout.CENTER);
+        filterPanels.add(new FilterPanel(
+            "Prioridad",
+            new PriorityTasksFilter().getFilters()
+        ));
+        filterPanels.add(new FilterPanel(
+            "Completadas",
+            new CompletedTasksFilter().getFilters()
+        ));
+        jpFilters.setLayout(new GridLayout(1, filterPanels.size() + 1));
+        filterPanels.forEach(filterPanel -> jpFilters.add(filterPanel.getPanel()));
 
         JPanel jpApplyFilters = new JPanel();
         JButton applyFiltersBtn = new JButton("Aplica Filtros");
         jpApplyFilters.add(applyFiltersBtn);
         jpFilters.add(jpApplyFilters);
 
-        container.add(jpFilters, BorderLayout.NORTH);
+        container.add(jpFilters);
 
-        // Panel Tareas
+        // Panel de tareas
         JPanel jpTasks = new JPanel();
         jpTasks.setBorder(BorderFactory.createTitledBorder("Tareas"));
-        List<Task> tareas = new ArrayList<>();
-        tareas.add(new Task().setTitle("Uno").setDescription("Prueba"));
-        tareas.add(new Task().setTitle("Dos").setDescription("Prueba"));
-        TasksTableModel tasksTableModel = new TasksTableModel(tareas);
-        jpTasks.add(new JScrollPane(new JTable(new TasksTableModel(tareas))));
+        JScrollPane tasksTable = new JScrollPane(new JTable(new TasksTableModel(tasks)));
+        tasksTable.setPreferredSize(new Dimension(500, 200));
+        jpTasks.add(tasksTable);
 
-        container.add(jpTasks, BorderLayout.CENTER);
+        container.add(jpTasks);
 
+        // Detalles de la tarea
+        taskData = new TaskData();
+        container.add(taskData.getPanel());
+
+        // Acción
+        JPanel jpAction = new JPanel();
+        JButton newTask = new JButton("Nuevo");
+        newTask.addActionListener(e -> controller.addTask());
+        jpAction.add(newTask);
+        JButton updateTask = new JButton("Actualiza");
+        updateTask.addActionListener(e -> controller.updateTask());
+        jpAction.add(updateTask);
+        JButton removeTask = new JButton("Borra");
+        removeTask.addActionListener(e -> controller.removeTask());
+        jpAction.add(removeTask);
+
+        container.add(jpAction);
 
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.pack();
@@ -95,11 +110,22 @@ public class View implements AskView, NotifyView {
 
     @Override
     public Task getTask() {
-        return null;
+        return new Task()
+            .setTitle(taskData.getTitle())
+            .setDescription(taskData.getDescription())
+            .setFinished(taskData.getCompleted())
+            .setPriority(taskData.getPriority());
     }
 
     @Override
     public List<Filter> getFilters() {
-        return null;
+        return filterPanels.stream()
+            .map(FilterPanel::getFilter)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public void taskListChanged() {
+        tasks = model.getTasks();
     }
 }
