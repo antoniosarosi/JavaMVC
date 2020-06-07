@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Cada panel de filtros actualiza su estado cuando el usuario elige el filtro
- * que quiere usando los JRadioButton, y después la vista solo tiene que mantener
- * una lista de paneles, a partir de ella es muy fácil construir los filtros
- * que recibe el modelo cuando el usuario quiera aplicarlos.
+ * Cada panel de filtros se encarga de su propio estado (filtro elegido por el usuario
+ * con los JRadioButton). La vista solo tiene que mantener una lista de paneles, a
+ * partir de ella es muy fácil construir los filtros que recibe el modelo cuando el
+ * usuario quiera aplicarlos.
  */
 public class FilterPanel {
     private String title;
@@ -27,7 +27,7 @@ public class FilterPanel {
     }
 
     /**
-     * @param title Titulo del panel
+     * @param title     Titulo del panel
      * @param filterMap Mapa con los títulos de los botones y filtro de cada uno
      */
     public FilterPanel(String title, Map<String, Filter> filterMap) {
@@ -37,7 +37,7 @@ public class FilterPanel {
     }
 
     /**
-     * Crea un panel con un grupo JRadioButton a partir del mapa que recibe
+     * Crea un panel con un grupo de JRadioButton a partir del mapa que recibe
      * en el constructor
      *
      * @return Panel de botones

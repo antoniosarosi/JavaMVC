@@ -54,14 +54,18 @@ public class TaskData {
         title.setText(task.getTitle());
         description.setText(task.getDescription());
         completed.setSelected(task.isFinished());
-        buttons.forEach(btn -> btn.setSelected(priority.get(btn.getText()) == task.getPriority()));
+        buttons.forEach(btn -> btn.setSelected(
+            priority.get(btn.getText()) == task.getPriority()
+        ));
     }
 
     /**
-     * @return Panel con detalles de la tarea
+     * Crea el componente correspondiente a los detalles de la tarea
+     *
+     * @return Panel de detalles de la tarea
      */
     public JPanel getPanel() {
-        // Panel de detalles de la tarea
+        // Panel
         JPanel jpDetails = new JPanel();
         jpDetails.setBorder(BorderFactory.createTitledBorder("Detalles de la tarea"));
         jpDetails.setLayout(new BoxLayout(jpDetails, BoxLayout.PAGE_AXIS));
@@ -87,11 +91,11 @@ public class TaskData {
         jpPriority.setBorder(BorderFactory.createTitledBorder("Prioridad"));
         ButtonGroup priorityBtns = new ButtonGroup();
 
-        for (JRadioButton btn : buttons) {
+        buttons.forEach(btn -> {
             priorityBtns.add(btn);
             jpPriority.add(btn);
+        });
 
-        }
         jpDetails.add(jpPriority);
 
         return jpDetails;

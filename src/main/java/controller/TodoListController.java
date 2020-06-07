@@ -54,6 +54,7 @@ public class TodoListController implements Controller {
     @Override
     public void changeFilters() {
         model.changeFilters(view.getFilters());
+        view.log("Filtros cambiados");
     }
 
     @Override

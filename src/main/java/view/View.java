@@ -90,13 +90,16 @@ public class View implements AskView, NotifyView {
 
         // Detalles de la tarea
         taskData = new TaskData();
-        tasksTable.getSelectionModel().addListSelectionListener(e -> tasks.forEach(task -> {
-            if (task.getTitle().equals(
-                tasksTable.getValueAt(tasksTable.getSelectedRow(), 0).toString())
-            ) {
-                taskData.updateViewData(task);
-            }
-        }));
+        tasksTable.getSelectionModel().addListSelectionListener(
+            e -> tasks.forEach(task -> {
+                String title = tasksTable.getValueAt(
+                    tasksTable.getSelectedRow(), 0
+                ).toString();
+                if (task.getTitle().equals(title)) {
+                    taskData.updateViewData(task);
+                }
+            })
+        );
         container.add(taskData.getPanel());
 
         // Acción
@@ -134,12 +137,17 @@ public class View implements AskView, NotifyView {
     }
 
     /**
-     * Arranca la iterfaz gráfica
+     * Arranca la interfaz gráfica
      */
     public void view() {
         SwingUtilities.invokeLater(this::gui);
     }
 
+    /**
+     * Devuelve los datos de la tarea escritos por el usuario
+     *
+     * @return Tarea
+     */
     @Override
     public Task getTask() {
         return new Task()
@@ -149,6 +157,11 @@ public class View implements AskView, NotifyView {
             .setPriority(taskData.getPriority());
     }
 
+    /**
+     * Devuelve los filtros aplicados por el usuario
+     *
+     * @return Lista de filtros
+     */
     @Override
     public List<Filter> getFilters() {
         return filterPanels.stream()
@@ -156,16 +169,29 @@ public class View implements AskView, NotifyView {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Imprime un mensaje en la interfaz
+     *
+     * @param msg Mensaje
+     */
     @Override
     public void log(String msg) {
         jtfLogs.setText(msg);
     }
 
+    /**
+     * Notifica al usuario de que ha ocurrido un error
+     *
+     * @param err Mensaje de error
+     */
     @Override
     public void error(String err) {
         JOptionPane.showMessageDialog(new Frame(), err);
     }
 
+    /**
+     * Informa a la vista de que los datos han cambiado y los actualiza
+     */
     @Override
     public void taskListChanged() {
         tasks = model.getTasks();

@@ -3,8 +3,7 @@ package model.task;
 import java.io.Serializable;
 
 /**
- * Cada una de las tareas que almacenará el modelo,
- * se considera que el título es único
+ * Cada una de las tareas que almacenará el modelo, se considera que el título es único
  */
 public class Task implements Serializable {
     private String title;

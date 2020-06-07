@@ -30,6 +30,11 @@ public class Model implements AskModel, ModelChanges {
         this.filters = filters;
     }
 
+    /**
+     * Devuelve la lista de tareas, aplicando los filtros correspondientes
+     *
+     * @return Lista de tareas
+     */
     @Override
     public List<Task> getTasks() {
         List<Task> list = new ArrayList<>(tasks);
@@ -38,6 +43,12 @@ public class Model implements AskModel, ModelChanges {
         return list;
     }
 
+    /**
+     * Añade una tarea nueva
+     *
+     * @param task Tarea a añadir
+     * @return true si se ha añadido, false en caso contrario (ya existía)
+     */
     @Override
     public boolean addTask(Task task) {
         if (tasks.contains(task)) {
@@ -49,6 +60,12 @@ public class Model implements AskModel, ModelChanges {
         return true;
     }
 
+    /**
+     * Borra una tarea
+     *
+     * @param task Tarea a borrar
+     * @return true si la ha borrado, false en otro caso (no existe la tarea)
+     */
     @Override
     public boolean removeTask(Task task) {
         int index = tasks.indexOf(task);
@@ -61,6 +78,12 @@ public class Model implements AskModel, ModelChanges {
         return true;
     }
 
+    /**
+     * Actualiza una tarea con los datos nuevos
+     *
+     * @param task Tarea a actualizar
+     * @return true si se ha actualizado, false si la tarea no existe
+     */
     @Override
     public boolean updateTask(Task task) {
         int index = tasks.indexOf(task);
@@ -73,6 +96,11 @@ public class Model implements AskModel, ModelChanges {
         return true;
     }
 
+    /**
+     * Cambia los filtros que se aplican
+     *
+     * @param filters Filtros a aplicar
+     */
     @Override
     public void changeFilters(Collection<Filter> filters) {
         setFilters(filters);
@@ -84,11 +112,12 @@ public class Model implements AskModel, ModelChanges {
      *
      * @return este objeto
      */
+    @SuppressWarnings("unchecked")
     public Model load() {
         try {
             FileInputStream fis = new FileInputStream(data);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            tasks = (ArrayList) ois.readObject();
+            tasks = (ArrayList<Task>) ois.readObject();
             ois.close();
             System.out.println("Datos cargados con éxito");
         }
