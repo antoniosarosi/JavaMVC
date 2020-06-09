@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 public class View implements AskView, NotifyView {
     private Controller controller;
     private AskModel model;
-    TaskData taskData;
-    JTable tasksTable;
-    JTextField jtfLogs;
-    List<Task> tasks;
-    List<FilterPanel> filterPanels;
+    private TaskData taskData;
+    private JTable tasksTable;
+    private JTextField jtfLogs;
+    private List<Task> tasks;
+    private List<FilterPanel> filterPanels;
 
     public View() {
         filterPanels = new ArrayList<>();

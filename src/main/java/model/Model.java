@@ -147,7 +147,7 @@ public class Model implements AskModel, ModelChanges {
             System.out.println("Datos guardados con éxito");
         }
         catch (IOException e) {
-            System.err.println("No se han podido almacenar los datos");
+            e.printStackTrace();
         }
     }
 }
